@@ -1,0 +1,55 @@
+{
+  "fill" : {
+    "automatic-gradient" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-gray:1.00000,1.00000"
+          },
+          "image-name" : "UNSUBS BUNGEE.svg",
+          "name" : "UNSUBS BUNGEE",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0.22198895079998238,
+              -282
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "extended-gray:1.00000,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "eraser.line.dashed 1.svg",
+          "name" : "eraser.line.dashed 1",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              5.536688706221867,
+              132
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
