@@ -4,31 +4,65 @@ struct MainView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var unsubVM = UnsubscribeViewModel()
     @State private var showingConfirmation = false
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+
+    private var isIPad: Bool { hSizeClass == .regular }
+    private var contentMaxWidth: CGFloat { isIPad ? 560 : .infinity }
+    private var horizontalPadding: CGFloat { isIPad ? 0 : 20 }
+    private var headerFontSize: CGFloat { isIPad ? 56 : 42 }
 
     var body: some View {
         NavigationView {
             ZStack {
                 background.ignoresSafeArea()
 
-                VStack(spacing: 0) {
-                    headerText
-                        .padding(.top, 8)
-                        .padding(.horizontal, 24)
+                if isIPad {
+                    // iPad: centered single-column layout
+                    VStack(spacing: 0) {
+                        headerText
+                            .padding(.top, 16)
+                            .padding(.horizontal, 24)
+                            .frame(maxWidth: contentMaxWidth)
 
-                    Spacer()
+                        Spacer()
 
-                    Group {
-                        if unsubVM.needsRelogin {
-                            securityAlertView
-                        } else if unsubVM.subscriptions.isEmpty && !unsubVM.isProcessing {
-                            readyStateView
-                        } else {
-                            processingStateView
+                        Group {
+                            if unsubVM.needsRelogin {
+                                securityAlertView
+                            } else if unsubVM.subscriptions.isEmpty && !unsubVM.isProcessing {
+                                readyStateView
+                            } else {
+                                processingStateView
+                            }
                         }
-                    }
-                    .padding(.horizontal, 20)
+                        .frame(maxWidth: contentMaxWidth)
+                        .padding(.horizontal, 0)
 
-                    Spacer()
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                } else {
+                    // iPhone: original layout
+                    VStack(spacing: 0) {
+                        headerText
+                            .padding(.top, 8)
+                            .padding(.horizontal, 24)
+
+                        Spacer()
+
+                        Group {
+                            if unsubVM.needsRelogin {
+                                securityAlertView
+                            } else if unsubVM.subscriptions.isEmpty && !unsubVM.isProcessing {
+                                readyStateView
+                            } else {
+                                processingStateView
+                            }
+                        }
+                        .padding(.horizontal, 20)
+
+                        Spacer()
+                    }
                 }
             }
             .navigationTitle("")
@@ -55,6 +89,7 @@ struct MainView: View {
                 Text("This will unsubscribe from all \(unsubVM.subscriptions.count) channels. This cannot be undone.")
             }
         }
+        .navigationViewStyle(.stack)
     }
 
     // MARK: - Background
@@ -84,7 +119,7 @@ struct MainView: View {
 
     private var headerText: some View {
         Text("MASS\nDROP")
-            .font(.system(size: 42, weight: .black, design: .rounded))
+            .font(.system(size: headerFontSize, weight: .black, design: .rounded))
             .foregroundStyle(
                 LinearGradient(
                     colors: [.red, Color(red: 1, green: 0.45, blue: 0.1)],
@@ -241,6 +276,7 @@ struct MainView: View {
 
     private var subscriptionListView: some View {
         VStack(spacing: 0) {
+            // iPad padding is handled by the parent frame; iPhone uses .padding(.horizontal, 20)
             // Header
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
