@@ -86,7 +86,7 @@ struct MainView: View {
                     Task { await unsubVM.unsubscribeAll(authVM: authVM) }
                 }
             } message: {
-                Text("This will unsubscribe from all \(unsubVM.subscriptions.count) channels. This cannot be undone.")
+                Text("This will unsubscribe from \(unsubVM.selectedCount) channels. This cannot be undone.")
             }
         }
         .navigationViewStyle(.stack)
@@ -287,7 +287,7 @@ struct MainView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Text("\(unsubVM.subscriptions.count) channels")
+                Text("\(unsubVM.selectedCount) of \(unsubVM.subscriptions.count)")
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(.red)
             }
@@ -298,15 +298,20 @@ struct MainView: View {
             Divider().opacity(0.3)
 
             List(unsubVM.subscriptions) { sub in
+                let isSelected = unsubVM.selectedIds.contains(sub.id)
                 HStack(spacing: 12) {
-                    Image(systemName: "checkmark.circle.fill")
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .font(.system(size: 18))
-                        .foregroundStyle(.red.opacity(0.80))
+                        .foregroundStyle(isSelected ? .red.opacity(0.80) : .secondary.opacity(0.5))
                     Text(sub.title)
                         .font(.system(size: 15, design: .rounded))
+                        .foregroundStyle(isSelected ? .primary : .secondary)
                         .lineLimit(1)
+                    Spacer(minLength: 0)
                 }
                 .padding(.vertical, 2)
+                .contentShape(Rectangle())
+                .onTapGesture { unsubVM.toggleSelection(sub.id) }
                 .listRowBackground(Color.clear)
             }
             .listStyle(.plain)
@@ -315,10 +320,12 @@ struct MainView: View {
             Divider().opacity(0.3)
 
             glassButton(
-                label: "Unsubscribe All \(unsubVM.subscriptions.count)",
+                label: "Unsubscribe All \(unsubVM.selectedCount)",
                 icon: "play.fill",
                 gradient: [.red, Color(red: 1, green: 0.45, blue: 0.1)]
             ) { showingConfirmation = true }
+                .disabled(unsubVM.selectedCount == 0)
+                .opacity(unsubVM.selectedCount == 0 ? 0.5 : 1)
                 .padding(16)
                 .background(.ultraThinMaterial)
         }
