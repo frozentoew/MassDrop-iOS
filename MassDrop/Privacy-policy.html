@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — MassDrop</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      line-height: 1.7;
+      padding: 48px 24px 80px;
+    }
+
+    .container {
+      max-width: 740px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 56px 60px;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .doc-header {
+      margin-bottom: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid #e5e5ea;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #1d1d1f;
+      margin-bottom: 16px;
+    }
+
+    .meta {
+      font-size: 0.9rem;
+      color: #6e6e73;
+      line-height: 1.8;
+    }
+
+    .meta strong {
+      color: #1d1d1f;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-top: 40px;
+      margin-bottom: 12px;
+      letter-spacing: -0.2px;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 0.975rem;
+      color: #3a3a3c;
+      margin-bottom: 14px;
+    }
+
+    ul {
+      margin: 10px 0 14px 20px;
+    }
+
+    ul li {
+      font-size: 0.975rem;
+      color: #3a3a3c;
+      margin-bottom: 6px;
+    }
+
+    a {
+      color: #0071e3;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    strong {
+      color: #1d1d1f;
+      font-weight: 600;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e5e5ea;
+      margin: 36px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 14px 0;
+    }
+
+    th {
+      background: #f5f5f7;
+      color: #6e6e73;
+      font-weight: 600;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid #e5e5ea;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0f0f5;
+      color: #3a3a3c;
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .footnote {
+      font-size: 0.85rem;
+      color: #6e6e73;
+      font-style: italic;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e5ea;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 32px 24px; border-radius: 12px; }
+      h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="doc-header">
+      <h1>Privacy Policy</h1>
+      <div class="meta">
+        <strong>MassDrop</strong><br />
+        Developer: Frozentoew<br />
+        Based in: South Korea<br />
+        Last Updated: April 30, 2026
+      </div>
+    </div>
+
+    <h2>1. Introduction</h2>
+    <p>This Privacy Policy explains how MassDrop ("the App", "we", "our") collects, uses, and protects your information when you use our iOS application. By using MassDrop, you agree to the practices described in this policy.</p>
+    <p>MassDrop is an independent app and is <strong>not affiliated with, endorsed by, or sponsored by Google LLC or YouTube.</strong></p>
+
+    <hr />
+
+    <h2>2. Information We Collect</h2>
+
+    <h3>2.1 Google Account Information</h3>
+    <p>When you sign in with your Google account, the App receives basic profile information provided by Google, including:</p>
+    <ul>
+      <li>Your Google account email address</li>
+      <li>Your display name</li>
+      <li>Your profile picture URL</li>
+    </ul>
+    <p>This information is used solely to identify your session within the App and is never sold or shared with third parties.</p>
+
+    <h3>2.2 YouTube Subscription Data</h3>
+    <p>To provide its core functionality, the App accesses your YouTube subscription list via the YouTube Data API. This data is:</p>
+    <ul>
+      <li>Fetched on demand to display your subscriptions</li>
+      <li>Used only to perform unsubscribe actions you explicitly request</li>
+      <li>Never stored on our servers beyond the duration of your active session</li>
+    </ul>
+
+    <h3>2.3 Authentication Tokens</h3>
+    <p>To keep you signed in securely:</p>
+    <ul>
+      <li><strong>On your device:</strong> App-issued JSON Web Tokens (JWTs) are stored in your iOS Keychain with device-only protection and no iCloud backup.</li>
+      <li><strong>On our server:</strong> Google OAuth tokens (access and refresh tokens) are stored server-side, encrypted at rest using AES-256-GCM. These tokens are never transmitted to third parties and are used exclusively to call the YouTube Data API on your behalf.</li>
+    </ul>
+
+    <h3>2.4 Information We Do NOT Collect</h3>
+    <p>We do not collect:</p>
+    <ul>
+      <li>Browsing history or activity outside the App</li>
+      <li>Location data</li>
+      <li>Device identifiers for advertising purposes</li>
+      <li>Any data for analytics, profiling, or marketing</li>
+    </ul>
+
+    <hr />
+
+    <h2>3. How We Use Your Information</h2>
+    <p>We use the information described above exclusively to:</p>
+    <ul>
+      <li>Authenticate you securely via Google OAuth 2.0</li>
+      <li>Retrieve and display your YouTube subscription list</li>
+      <li>Process unsubscribe actions you choose to perform</li>
+      <li>Maintain your session and rotate authentication tokens securely</li>
+    </ul>
+    <p>We do <strong>not</strong> use your information for advertising, profiling, or any purpose beyond the core functionality of the App.</p>
+
+    <hr />
+
+    <h2>4. How We Share Your Information</h2>
+    <p>We do not sell, rent, or share your personal information with any third parties, except:</p>
+    <ul>
+      <li><strong>Google LLC:</strong> The App communicates with Google's OAuth 2.0 and YouTube Data API services. Your use of these services is subject to <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</li>
+      <li><strong>Legal requirements:</strong> We may disclose information if required by law or to protect our legal rights.</li>
+    </ul>
+
+    <hr />
+
+    <h2>5. Data Retention</h2>
+    <ul>
+      <li><strong>Server-side tokens</strong> are retained as long as your account is active within the App. Tokens are invalidated and deleted when you sign out.</li>
+      <li><strong>Device-side tokens</strong> are removed from the Keychain when you sign out or delete the App.</li>
+      <li>We do not retain YouTube subscription data after your session ends.</li>
+    </ul>
+
+    <hr />
+
+    <h2>6. Security</h2>
+    <p>We take reasonable technical measures to protect your information:</p>
+    <ul>
+      <li>Google OAuth tokens are encrypted at rest with AES-256-GCM</li>
+      <li>App JWTs use short expiry windows (access tokens: 15 minutes; refresh tokens: 7 days with rotation)</li>
+      <li>Refresh token reuse triggers automatic revocation of your entire token family to prevent replay attacks</li>
+      <li>All communication between the App and our backend is over HTTPS</li>
+    </ul>
+    <p>Despite these measures, no system is completely secure. We encourage you to use a strong Google account password and enable two-factor authentication on your Google account.</p>
+
+    <hr />
+
+    <h2>7. Your Rights</h2>
+    <p>Depending on your jurisdiction, you may have the right to:</p>
+    <ul>
+      <li><strong>Access</strong> the personal data we hold about you</li>
+      <li><strong>Delete</strong> your data by signing out of the App (which invalidates all server-side tokens) or by contacting us</li>
+      <li><strong>Withdraw consent</strong> by uninstalling the App and revoking MassDrop's access in your <a href="https://myaccount.google.com/permissions">Google Account permissions</a></li>
+    </ul>
+    <p>To revoke the App's access to your Google account at any time, visit your Google Account security settings and remove MassDrop from authorized applications.</p>
+
+    <hr />
+
+    <h2>8. Children's Privacy</h2>
+    <p>The App is not directed to children under the age of 14 (or the applicable minimum age in your country). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us and we will delete it promptly.</p>
+
+    <hr />
+
+    <h2>9. Third-Party Services</h2>
+    <p>The App integrates with the following third-party services, each governed by their own privacy policies:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Purpose</th>
+          <th>Privacy Policy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google OAuth 2.0</td>
+          <td>Authentication</td>
+          <td><a href="https://policies.google.com/privacy">Google Privacy Policy</a></td>
+        </tr>
+        <tr>
+          <td>YouTube Data API</td>
+          <td>Subscription management</td>
+          <td><a href="https://policies.google.com/privacy">Google Privacy Policy</a></td>
+        </tr>
+        <tr>
+          <td>Apple App Store</td>
+          <td>Distribution &amp; payment</td>
+          <td><a href="https://www.apple.com/legal/privacy/">Apple Privacy Policy</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr />
+
+    <h2>10. Changes to This Privacy Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last Updated" date at the top of this document. Continued use of the App after any changes constitutes your acceptance of the updated policy. We encourage you to review this policy periodically.</p>
+
+    <hr />
+
+    <h2>11. Contact</h2>
+    <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please contact:</p>
+    <p><strong>Developer:</strong> <a href="mailto:info@frozenfoot.net">info@frozenfoot.net</a><br />
+    <strong>App:</strong> MassDrop</p>
+
+    <p class="footnote">YouTube is a trademark of Google LLC. This app is not affiliated with or endorsed by Google LLC or YouTube.</p>
+
+  </div>
+</body>
+</html>
