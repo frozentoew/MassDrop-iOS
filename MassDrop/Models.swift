@@ -75,6 +75,19 @@ struct SubscriptionsResponse: Codable, Sendable {
     }
 }
 
+struct BatchDeleteFailure: Codable, Sendable {
+    let subscriptionId: String
+    let reason: String
+}
+
+struct BatchDeleteResponse: Codable, Sendable {
+    let attempted: Int
+    let succeeded: Int
+    let failed: Int
+    let failures: [BatchDeleteFailure]
+    let quotaUsed: Int
+}
+
 struct ErrorResponse: Codable, Sendable {
     let error: String
     let quotaExceeded: Bool?

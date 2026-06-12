@@ -235,12 +235,22 @@ struct MainView: View {
     }
 
     private var completedView: some View {
-        glassCard {
+        let hasFailures = unsubVM.failedCount > 0
+        return glassCard {
             VStack(spacing: 24) {
-                glassIcon("checkmark.circle.fill", color: .green, size: 52)
+                glassIcon(
+                    hasFailures ? "exclamationmark.circle.fill" : "checkmark.circle.fill",
+                    color: hasFailures ? .orange : .green,
+                    size: 52
+                )
 
-                Text("All Done!")
+                Text(hasFailures ? "Partially Done" : "All Done!")
                     .font(.system(size: 26, weight: .black, design: .rounded))
+
+                Text(unsubVM.statusMessage)
+                    .font(.system(size: 15, design: .rounded))
+                    .foregroundStyle(hasFailures ? .orange : .secondary)
+                    .multilineTextAlignment(.center)
 
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
