@@ -23,6 +23,14 @@ class UnsubscribeViewModel: ObservableObject {
         }
     }
 
+    func selectAll() {
+        selectedIds = Set(subscriptions.map { $0.id })
+    }
+
+    func deselectAll() {
+        selectedIds.removeAll()
+    }
+
     func loadSubscriptions(authVM: AuthViewModel) async {
         do {
             let appToken = try await authVM.getAppToken()

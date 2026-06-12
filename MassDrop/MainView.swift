@@ -292,7 +292,7 @@ struct MainView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(unsubVM.statusMessage)
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    Text("Tap a channel to deselect it")
+                    Text("Tap a channel to toggle it")
                         .font(.system(size: 12, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
@@ -303,6 +303,21 @@ struct MainView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
+            .background(.ultraThinMaterial)
+
+            Divider().opacity(0.3)
+
+            HStack(spacing: 12) {
+                Button("Select All") { unsubVM.selectAll() }
+                    .disabled(unsubVM.selectedCount == unsubVM.subscriptions.count)
+                Spacer()
+                Button("Deselect All") { unsubVM.deselectAll() }
+                    .disabled(unsubVM.selectedCount == 0)
+            }
+            .font(.system(size: 14, weight: .semibold, design: .rounded))
+            .tint(.red)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
             .background(.ultraThinMaterial)
 
             Divider().opacity(0.3)
