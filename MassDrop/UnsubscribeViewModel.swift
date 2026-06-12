@@ -11,6 +11,7 @@ class UnsubscribeViewModel: ObservableObject {
     @Published var isComplete = false
     @Published var quotaExceeded = false
     @Published var needsRelogin = false
+    @Published var failedCount = 0
 
     var selectedCount: Int { selectedIds.count }
 
@@ -51,58 +52,39 @@ class UnsubscribeViewModel: ObservableObject {
         isProcessing = true
         quotaExceeded = false
         needsRelogin = false
+        failedCount = 0
         progress = 0.0
-        
+
         let targets = subscriptions.filter { selectedIds.contains($0.id) }
-        let total = Double(targets.count)
-        var completed = 0.0
-        var failed = 0
+        statusMessage = "Unsubscribing \(targets.count) channels…"
 
         do {
             let appToken = try await authVM.getAppToken()
 
-            for subscription in targets {
-                do {
-                    try await APIManager.shared.unsubscribe(
-                        subscriptionId: subscription.id,
-                        appToken: appToken
-                    )
-                    
-                    completed += 1
-                    progress = completed / total
-                    statusMessage = "Unsubscribed: \(Int(completed))/\(Int(total))"
-                    
-                    // Delay to respect rate limits
-                    try await Task.sleep(nanoseconds: 150_000_000) // 0.15 seconds
-                    
-                } catch APIError.quotaExceeded {
-                    quotaExceeded = true
-                    statusMessage = "You have used up all credential tokens for the day. Try tomorrow again after 08:00 UTC to complete the remaining."
-                    break
-                } catch APIError.reloginRequired {
-                    needsRelogin = true
-                    statusMessage = "Security issue detected. Please login again."
-                    break
-                } catch {
-                    failed += 1
-                }
-            }
-            
-            if !quotaExceeded && !needsRelogin {
-                isComplete = true
-                let message = failed > 0
-                    ? "Completed with \(failed) failures"
-                    : "Completed"
-                statusMessage = message
-            }
-            
+            let result = try await APIManager.shared.batchUnsubscribe(
+                subscriptionIds: targets.map { $0.id },
+                appToken: appToken
+            )
+
+            failedCount = result.failed
+            progress = 1.0
+            isComplete = true
+            statusMessage = result.failed > 0
+                ? "\(result.succeeded) unsubscribed, \(result.failed) failed"
+                : "All \(result.succeeded) channels unsubscribed"
+
+        } catch APIError.quotaExceeded {
+            quotaExceeded = true
+            statusMessage = "Daily quota exceeded. Try after 08:00 UTC."
         } catch APIError.reloginRequired {
             needsRelogin = true
             statusMessage = "Security issue detected. Please login again."
+        } catch APIError.rateLimited {
+            statusMessage = "Rate limited. Please wait a minute and try again."
         } catch {
             statusMessage = "Error: \(error.localizedDescription)"
         }
-        
+
         isProcessing = false
     }
 }

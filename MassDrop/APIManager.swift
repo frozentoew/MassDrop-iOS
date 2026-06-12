@@ -158,6 +158,34 @@ class APIManager {
         }
     }
     
+    func batchUnsubscribe(
+        subscriptionIds: [String],
+        appToken: String
+    ) async throws -> BatchDeleteResponse {
+        let url = URL(string: "\(baseURL)/subscriptions/batch-delete")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(appToken)", forHTTPHeaderField: "Authorization")
+        request.timeoutInterval = 120 // batch calls take longer
+
+        let body = ["subscriptionIds": subscriptionIds]
+        request.httpBody = try JSONEncoder().encode(body)
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.networkError
+        }
+
+        // 200 = all succeeded, 207 = partial success — both are valid
+        if httpResponse.statusCode != 200 && httpResponse.statusCode != 207 {
+            let _: Void = try handleAPIError(data: data, statusCode: httpResponse.statusCode)
+        }
+
+        return try JSONDecoder().decode(BatchDeleteResponse.self, from: data)
+    }
+
     // MARK: - Error Handling
     
     private func handleAPIError<T>(data: Data, statusCode: Int) throws -> T {
