@@ -106,9 +106,21 @@ class UnsubscribeViewModel: ObservableObject {
 
             failedCount = result.failed
             isComplete = true
-            statusMessage = result.failed > 0
-                ? "\(result.succeeded) unsubscribed, \(result.failed) failed"
-                : "All \(result.succeeded) channels unsubscribed"
+            if result.failed == 0 {
+                statusMessage = "All \(result.succeeded) channels unsubscribed"
+            } else {
+                // Partial run: tell the user *why* the rest failed so a quota cutoff
+                // isn't mistaken for an app bug.
+                let reason: String
+                if quotaHit {
+                    reason = "daily quota reached — try again after 08:00 UTC"
+                } else if authHit {
+                    reason = "session expired — sign in again"
+                } else {
+                    reason = result.failures.first?.reason ?? "some channels couldn't be removed"
+                }
+                statusMessage = "\(result.succeeded) unsubscribed, \(result.failed) failed — \(reason)"
+            }
 
         } catch APIError.quotaExceeded {
             quotaExceeded = true
