@@ -64,22 +64,48 @@ class UnsubscribeViewModel: ObservableObject {
         progress = 0.0
 
         let targets = subscriptions.filter { selectedIds.contains($0.id) }
-        statusMessage = "Unsubscribing \(targets.count) channels…"
+        let total = targets.count
+        statusMessage = "Unsubscribing \(total) channels…"
 
         do {
             let appToken = try await authVM.getAppToken()
 
-            let result = try await APIManager.shared.batchUnsubscribe(
-                subscriptionIds: targets.map { $0.id },
-                appToken: appToken
-            )
+            var succeeded = 0
+            var failed = 0
 
-            failedCount = result.failed
-            progress = 1.0
+            for (index, sub) in targets.enumerated() {
+                do {
+                    try await APIManager.shared.unsubscribe(
+                        subscriptionId: sub.id,
+                        appToken: appToken
+                    )
+                    succeeded += 1
+                } catch APIError.quotaExceeded {
+                    quotaExceeded = true
+                    statusMessage = "Daily quota exceeded. Try after 08:00 UTC."
+                    isProcessing = false
+                    return
+                } catch APIError.reloginRequired {
+                    needsRelogin = true
+                    statusMessage = "Security issue detected. Please login again."
+                    isProcessing = false
+                    return
+                } catch {
+                    failed += 1
+                }
+
+                progress = Double(index + 1) / Double(total)
+
+                if index < total - 1 {
+                    try? await Task.sleep(nanoseconds: 150_000_000) // 0.15s delay
+                }
+            }
+
+            failedCount = failed
             isComplete = true
-            statusMessage = result.failed > 0
-                ? "\(result.succeeded) unsubscribed, \(result.failed) failed"
-                : "All \(result.succeeded) channels unsubscribed"
+            statusMessage = failed > 0
+                ? "\(succeeded) unsubscribed, \(failed) failed"
+                : "All \(succeeded) channels unsubscribed"
 
         } catch APIError.quotaExceeded {
             quotaExceeded = true
