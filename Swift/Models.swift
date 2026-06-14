@@ -88,6 +88,19 @@ struct BatchDeleteResponse: Codable, Sendable {
     let quotaUsed: Int
 }
 
+/// Discriminator for a single line of the NDJSON batch-delete stream.
+struct BatchStreamLineType: Codable, Sendable {
+    let type: String
+}
+
+/// A `{type:"progress"}` line emitted after each individual delete.
+struct BatchStreamProgress: Codable, Sendable {
+    let completed: Int
+    let total: Int
+    let succeeded: Int
+    let failed: Int
+}
+
 struct ErrorResponse: Codable, Sendable {
     let error: String
     let quotaExceeded: Bool?

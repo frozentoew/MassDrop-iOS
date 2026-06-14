@@ -70,42 +70,45 @@ class UnsubscribeViewModel: ObservableObject {
         do {
             let appToken = try await authVM.getAppToken()
 
-            var succeeded = 0
-            var failed = 0
-
-            for (index, sub) in targets.enumerated() {
-                do {
-                    try await APIManager.shared.unsubscribe(
-                        subscriptionId: sub.id,
-                        appToken: appToken
-                    )
-                    succeeded += 1
-                } catch APIError.quotaExceeded {
-                    quotaExceeded = true
-                    statusMessage = "Daily quota exceeded. Try after 08:00 UTC."
-                    isProcessing = false
-                    return
-                } catch APIError.reloginRequired {
-                    needsRelogin = true
-                    statusMessage = "Security issue detected. Please login again."
-                    isProcessing = false
-                    return
-                } catch {
-                    failed += 1
-                }
-
-                progress = Double(index + 1) / Double(total)
-
-                if index < total - 1 {
-                    try? await Task.sleep(nanoseconds: 150_000_000) // 0.15s delay
-                }
+            // Use the batch endpoint: the per-channel delete endpoint is capped at
+            // 30 requests/min, so deleting >30 channels in a loop gets rate-limited
+            // partway through. The batch endpoint performs every delete inside a
+            // single streamed request server-side, bypassing the per-request limit,
+            // and reports progress per channel so the bar updates live.
+            let result = try await APIManager.shared.batchUnsubscribe(
+                subscriptionIds: targets.map { $0.id },
+                appToken: appToken
+            ) { [weak self] completed, total in
+                guard let self, total > 0 else { return }
+                self.progress = Double(completed) / Double(total)
+                self.statusMessage = "Unsubscribing \(completed) of \(total)…"
             }
 
-            failedCount = failed
+            progress = 1.0
+
+            // A whole-run quota/auth failure isn't an HTTP error — the stream
+            // completes normally and surfaces the cause in the result `failures`.
+            let quotaHit = result.failures.contains { $0.reason.localizedCaseInsensitiveContains("quota") }
+            let authHit = result.failures.contains { $0.reason.localizedCaseInsensitiveContains("authentication") }
+
+            if result.succeeded == 0 && quotaHit {
+                quotaExceeded = true
+                statusMessage = "Daily quota exceeded. Try after 08:00 UTC."
+                isProcessing = false
+                return
+            }
+            if result.succeeded == 0 && authHit {
+                needsRelogin = true
+                statusMessage = "Security issue detected. Please login again."
+                isProcessing = false
+                return
+            }
+
+            failedCount = result.failed
             isComplete = true
-            statusMessage = failed > 0
-                ? "\(succeeded) unsubscribed, \(failed) failed"
-                : "All \(succeeded) channels unsubscribed"
+            statusMessage = result.failed > 0
+                ? "\(result.succeeded) unsubscribed, \(result.failed) failed"
+                : "All \(result.succeeded) channels unsubscribed"
 
         } catch APIError.quotaExceeded {
             quotaExceeded = true
