@@ -16,7 +16,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		275C7A992F3F62F7007ABE61 /* Exceptions for "MassDrop" folder in "MassDrop" target */ = {
+		275C7A992F3F62F7007ABE61 /* Exceptions for "Swift" folder in "MassDrop" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -26,12 +26,12 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		275C7A7E2F3F5EB4007ABE61 /* MassDrop */ = {
+		275C7A7E2F3F5EB4007ABE61 /* Swift */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				275C7A992F3F62F7007ABE61 /* Exceptions for "MassDrop" folder in "MassDrop" target */,
+				275C7A992F3F62F7007ABE61 /* Exceptions for "Swift" folder in "MassDrop" target */,
 			);
-			path = MassDrop;
+			path = Swift;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -52,7 +52,7 @@
 		275C7A732F3F5EB4007ABE61 = {
 			isa = PBXGroup;
 			children = (
-				275C7A7E2F3F5EB4007ABE61 /* MassDrop */,
+				275C7A7E2F3F5EB4007ABE61 /* Swift */,
 				275C7A902F3F603F007ABE61 /* Frameworks */,
 				275C7A7D2F3F5EB4007ABE61 /* Products */,
 			);
@@ -89,7 +89,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				275C7A7E2F3F5EB4007ABE61 /* MassDrop */,
+				275C7A7E2F3F5EB4007ABE61 /* Swift */,
 			);
 			name = MassDrop;
 			packageProductDependencies = (
@@ -294,7 +294,7 @@
 				DEVELOPMENT_TEAM = GNLKMZ2A8Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = massdrop/Info.plist;
+				INFOPLIST_FILE = Swift/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MassDrop;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -338,7 +338,7 @@
 				DEVELOPMENT_TEAM = GNLKMZ2A8Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = massdrop/Info.plist;
+				INFOPLIST_FILE = Swift/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MassDrop;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
