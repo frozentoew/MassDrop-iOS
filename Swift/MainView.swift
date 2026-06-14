@@ -117,16 +117,19 @@ struct MainView: View {
 
     // MARK: - Header
 
+    /// The brand gradient used by the "MASS DROP" title.
+    private var brandGradient: LinearGradient {
+        LinearGradient(
+            colors: [.red, Color(red: 1, green: 0.45, blue: 0.1)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
     private var headerText: some View {
         Text("MASS\nDROP")
             .font(.system(size: headerFontSize, weight: .black, design: .rounded))
-            .foregroundStyle(
-                LinearGradient(
-                    colors: [.red, Color(red: 1, green: 0.45, blue: 0.1)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+            .foregroundStyle(brandGradient)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -248,9 +251,10 @@ struct MainView: View {
                     .font(.system(size: 26, weight: .black, design: .rounded))
 
                 Text(unsubVM.statusMessage)
-                    .font(.system(size: 15, design: .rounded))
-                    .foregroundStyle(hasFailures ? .orange : .secondary)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(brandGradient)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -277,9 +281,16 @@ struct MainView: View {
             VStack(spacing: 20) {
                 glassIcon("clock.fill", color: .orange, size: 48)
                 Text(unsubVM.statusMessage)
-                    .font(.system(size: 15, design: .rounded))
-                    .foregroundStyle(.orange)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(brandGradient)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                glassButton(
+                    label: "Sign Out",
+                    icon: "rectangle.portrait.and.arrow.right",
+                    gradient: [.red, Color(red: 1, green: 0.45, blue: 0.1)]
+                ) { authVM.signOut() }
             }
         }
     }
