@@ -40,10 +40,10 @@ struct SubscriptionCache {
         guard (try? data.write(to: url, options: .atomic)) != nil else { return }
 
         // Keep on-device only, consistent with the app's Keychain storage.
-        var url = url
+        var backupURL = url
         var values = URLResourceValues()
         values.isExcludedFromBackup = true
-        try? url.setResourceValues(values)
+        try? backupURL.setResourceValues(values)
     }
 
     /// The cached list, but only if it belongs to `userId`.
