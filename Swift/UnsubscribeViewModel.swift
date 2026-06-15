@@ -32,8 +32,10 @@ class UnsubscribeViewModel: ObservableObject {
     }
 
     func loadSubscriptions(authVM: AuthViewModel) async {
+        var currentUserId: String?
         do {
             let appToken = try await authVM.getAppToken()
+            currentUserId = userId(fromAppToken: appToken)
 
             statusMessage = "Loading subscriptions..."
 
@@ -44,10 +46,25 @@ class UnsubscribeViewModel: ObservableObject {
             subscriptions = response.subscriptions
             selectedIds = Set(response.subscriptions.map { $0.id })
             statusMessage = "Found \(response.totalCount) subscriptions"
-            
+
+            // Cache the good list so a later quota-blocked load can still show it.
+            if let uid = currentUserId {
+                SubscriptionCache.shared.save(response.subscriptions, for: uid)
+            }
+
         } catch APIError.quotaExceeded {
-            statusMessage = "Quota exceeded. Try after 08:00 UTC."
-            quotaExceeded = true
+            // Listing also costs quota, so a live fetch can't succeed right now.
+            // Fall back to the last saved list (if any) so the user can still
+            // review/select channels; unsubscribing will surface the quota wall.
+            if let uid = currentUserId,
+               let cached = SubscriptionCache.shared.load(for: uid), !cached.isEmpty {
+                subscriptions = cached
+                selectedIds = Set(cached.map { $0.id })
+                statusMessage = "Last saved list — daily quota reached"
+            } else {
+                statusMessage = "Quota exceeded. Try after 08:00 UTC."
+                quotaExceeded = true
+            }
         } catch APIError.reloginRequired {
             statusMessage = "Security issue detected. Please login again."
             needsRelogin = true
