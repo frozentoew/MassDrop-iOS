@@ -4,6 +4,7 @@ struct MainView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var unsubVM = UnsubscribeViewModel()
     @State private var showingConfirmation = false
+    @State private var showingDeleteAccountConfirmation = false
     @Environment(\.horizontalSizeClass) private var hSizeClass
 
     private var isIPad: Bool { hSizeClass == .regular }
@@ -69,10 +70,18 @@ struct MainView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { authVM.signOut() }) {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Menu {
+                        Button(action: { authVM.signOut() }) {
+                            Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                        }
+                        Divider()
+                        Button(role: .destructive, action: { showingDeleteAccountConfirmation = true }) {
+                            Label("Delete Account", systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.primary)
                             .padding(8)
                             .background(.ultraThinMaterial, in: Circle())
                             .overlay(Circle().strokeBorder(.white.opacity(0.40), lineWidth: 0.8))
@@ -87,6 +96,37 @@ struct MainView: View {
                 }
             } message: {
                 Text("This will unsubscribe from \(unsubVM.selectedCount) channels. This cannot be undone.")
+            }
+            .alert("Delete Account", isPresented: $showingDeleteAccountConfirmation) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) {
+                    Task { await authVM.deleteAccount() }
+                }
+            } message: {
+                Text("This will permanently remove your account data from our servers and sign you out. Your YouTube subscriptions are not affected.")
+            }
+            .alert("Couldn't Delete Account", isPresented: Binding(
+                get: { authVM.deleteAccountError != nil },
+                set: { if !$0 { authVM.deleteAccountError = nil } }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(authVM.deleteAccountError ?? "")
+            }
+            .overlay {
+                if authVM.isDeletingAccount {
+                    ZStack {
+                        Color.black.opacity(0.35).ignoresSafeArea()
+                        VStack(spacing: 16) {
+                            ProgressView().tint(.white).scaleEffect(1.4)
+                            Text("Deleting account…")
+                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.white)
+                        }
+                        .padding(32)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    }
+                }
             }
         }
         .navigationViewStyle(.stack)

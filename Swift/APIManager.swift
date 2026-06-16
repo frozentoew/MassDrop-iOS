@@ -208,6 +208,26 @@ class APIManager {
         return result
     }
 
+    // MARK: - Account Deletion
+
+    func deleteAccount(appToken: String) async throws {
+        let url = URL(string: "\(baseURL)/auth/account")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(appToken)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.networkError
+        }
+
+        if httpResponse.statusCode != 200 {
+            let _: Void = try handleAPIError(data: data, statusCode: httpResponse.statusCode)
+        }
+    }
+
     // MARK: - Error Handling
     
     private func handleAPIError<T>(data: Data, statusCode: Int) throws -> T {
