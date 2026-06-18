@@ -113,34 +113,6 @@ class AuthViewModel: ObservableObject {
         tokens = nil
         isAuthenticated = false
     }
-
-    @Published var isDeletingAccount = false
-    @Published var deleteAccountError: String?
-
-    func deleteAccount() async {
-        isDeletingAccount = true
-        deleteAccountError = nil
-
-        do {
-            let token = try await getAppToken()
-            try await APIManager.shared.deleteAccount(appToken: token)
-        } catch {
-            // Deletion was NOT confirmed by the server, so the account may still
-            // exist. Keep the user signed in, surface the error, and let them
-            // retry — never report success on an unconfirmed deletion.
-            deleteAccountError = (error as? APIError)?.errorDescription
-                ?? "Account deletion failed. Please try again."
-            isDeletingAccount = false
-            return
-        }
-
-        // Deletion confirmed by the server — wipe local state.
-        GIDSignIn.sharedInstance.signOut()
-        KeychainHelper.shared.clearAll()
-        tokens = nil
-        isAuthenticated = false
-        isDeletingAccount = false
-    }
     
     // Get valid app token (handles auto-refresh of JWT)
     func getAppToken() async throws -> String {
