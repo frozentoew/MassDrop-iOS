@@ -80,11 +80,14 @@ class APIManager {
         
         if httpResponse.statusCode != 200 {
             if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                if errorResponse.youtubeAccessMissing == true {
+                    throw APIError.youtubeAccessMissing
+                }
                 throw APIError.serverError(errorResponse.error)
             }
             throw APIError.authenticationFailed
         }
-        
+
         return try JSONDecoder().decode(AuthTokens.self, from: data)
     }
     
@@ -215,6 +218,9 @@ class APIManager {
             if errorResponse.quotaExceeded == true {
                 throw APIError.quotaExceeded
             }
+            if errorResponse.youtubeAccessMissing == true {
+                throw APIError.youtubeAccessMissing
+            }
             if errorResponse.needsRefresh == true {
                 throw APIError.tokenExpired
             }
@@ -228,7 +234,9 @@ class APIManager {
         case 401:
             throw APIError.tokenExpired
         case 403:
-            throw APIError.quotaExceeded
+            // A 403 without our JSON body is not necessarily a quota error
+            // (e.g. a proxy or edge rejection), so don't report it as one.
+            throw APIError.serverError("Forbidden")
         case 429:
             throw APIError.rateLimited
         default:
@@ -244,8 +252,9 @@ enum APIError: Error, LocalizedError {
     case tokenExpired
     case reloginRequired
     case rateLimited
+    case youtubeAccessMissing
     case serverError(String)
-    
+
     var errorDescription: String? {
         switch self {
         case .authenticationFailed:
@@ -260,6 +269,8 @@ enum APIError: Error, LocalizedError {
             return "Security breach detected. Please login again."
         case .rateLimited:
             return "Too many requests. Please wait."
+        case .youtubeAccessMissing:
+            return "MassDrop needs permission to manage your YouTube subscriptions. Please sign in again and allow YouTube access."
         case .serverError:
             return "A server error occurred. Please try again."
         }
