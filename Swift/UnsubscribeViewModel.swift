@@ -68,6 +68,12 @@ class UnsubscribeViewModel: ObservableObject {
         } catch APIError.reloginRequired {
             statusMessage = "Security issue detected. Please login again."
             needsRelogin = true
+        } catch APIError.youtubeAccessMissing {
+            // Session exists but Google never granted YouTube access. Send the user
+            // back to the sign-in screen with an explanation so they can grant it.
+            statusMessage = ""
+            authVM.signOut()
+            authVM.error = APIError.youtubeAccessMissing.errorDescription
         } catch {
             statusMessage = "Error: \(error.localizedDescription)"
         }
@@ -107,6 +113,15 @@ class UnsubscribeViewModel: ObservableObject {
             // completes normally and surfaces the cause in the result `failures`.
             let quotaHit = result.failures.contains { $0.reason.localizedCaseInsensitiveContains("quota") }
             let authHit = result.failures.contains { $0.reason.localizedCaseInsensitiveContains("authentication") }
+            let accessHit = result.failures.contains { $0.reason.localizedCaseInsensitiveContains("YouTube access") }
+
+            if result.succeeded == 0 && accessHit {
+                isProcessing = false
+                statusMessage = ""
+                authVM.signOut()
+                authVM.error = APIError.youtubeAccessMissing.errorDescription
+                return
+            }
 
             if result.succeeded == 0 && quotaHit {
                 quotaExceeded = true
@@ -145,6 +160,10 @@ class UnsubscribeViewModel: ObservableObject {
         } catch APIError.reloginRequired {
             needsRelogin = true
             statusMessage = "Security issue detected. Please login again."
+        } catch APIError.youtubeAccessMissing {
+            statusMessage = ""
+            authVM.signOut()
+            authVM.error = APIError.youtubeAccessMissing.errorDescription
         } catch APIError.rateLimited {
             statusMessage = "Rate limited. Please wait a minute and try again."
         } catch {

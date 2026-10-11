@@ -106,9 +106,10 @@ struct ErrorResponse: Codable, Sendable {
     let quotaExceeded: Bool?
     let needsRefresh: Bool?
     let reloginRequired: Bool?
+    let youtubeAccessMissing: Bool?
 
     enum CodingKeys: String, CodingKey {
-        case error, quotaExceeded, needsRefresh, reloginRequired
+        case error, quotaExceeded, needsRefresh, reloginRequired, youtubeAccessMissing
     }
 
     // Marked nonisolated so JSONDecoder can call it from any isolation context (Swift 6).
@@ -118,5 +119,6 @@ struct ErrorResponse: Codable, Sendable {
         quotaExceeded    = try c.decodeIfPresent(Bool.self,  forKey: .quotaExceeded)
         needsRefresh     = try c.decodeIfPresent(Bool.self,  forKey: .needsRefresh)
         reloginRequired  = try c.decodeIfPresent(Bool.self,  forKey: .reloginRequired)
+        youtubeAccessMissing = try c.decodeIfPresent(Bool.self, forKey: .youtubeAccessMissing)
     }
 }

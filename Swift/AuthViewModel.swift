@@ -59,7 +59,8 @@ class AuthViewModel: ObservableObject {
             )
 
             // Request YouTube scope
-            let additionalScopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+            let youtubeScope = "https://www.googleapis.com/auth/youtube.force-ssl"
+            let additionalScopes = [youtubeScope]
 
             // Step 3: Complete Google sign-in (returns serverAuthCode directly via SDK)
             let result = try await GIDSignIn.sharedInstance.signIn(
@@ -67,6 +68,17 @@ class AuthViewModel: ObservableObject {
                 hint: nil,
                 additionalScopes: additionalScopes
             )
+
+            // Google's consent screen lets users untick individual permissions.
+            // Without the YouTube scope every API call fails, so stop here with a
+            // clear explanation instead of letting the user into a broken session.
+            guard result.user.grantedScopes?.contains(youtubeScope) == true else {
+                GIDSignIn.sharedInstance.signOut()
+                pendingState = nil
+                error = APIError.youtubeAccessMissing.errorDescription
+                isLoading = false
+                return
+            }
 
             guard let serverAuthCode = result.serverAuthCode else {
                 error = "Failed to get authorization code"
